@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Beer Search - Home</title>
+    <meta name="description" content="Search Beers and Breweries with Bluge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/bulma.min.css">
+    <link rel="stylesheet" href="/css/tree.css">
+    <script defer src="/js/fa-all.min.js"></script>
+    <script defer src="/js/jquery-3.5.1.min.js"></script>
+    <script defer src="/js/handlebars.min-v4.7.6.js"></script>
+    <script defer src="/js/search.js"></script>
+    <script id="searchResultsTmpl" type="text/x-handlebars-template">
+        {{#if hits}}
+            <nav class="level">
+                <div class="level-left">
+                    <div class="level-item">
+                        <h3 class="title is-3">Results</h3>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <span class="tag is-info is-light">{{message}}</span>
+                    </div>
+                </div>
+            </nav>
+            {{#each hits as |hit|}}
+                {{> searchResultTmpl hit}}
+            {{/each}}
+        {{else}}
+        <nav class="level">
+            <div class="level-left">
+                <div class="level-item">
+                    <h3 class="title is-3">No Results</h3>
+                </div>
+            </div>
+        </nav>
+        {{/if}}
+        <div class="content column is-one-fifth is-offset-two-fifths">
+            {{#if previousPage}}
+            <button type="button" class="button is-small" onclick="jumpToPage({{previousPage}})">&laquo; Previous</button>
+            {{/if}}
+            {{#if nextPage}}
+            <button type="button" class="button is-small" onclick="jumpToPage({{nextPage}})">Next &raquo;</button>
+            {{/if}}
+        </div>
+    </script>
+    <script id="searchResultTmpl" type="text/x-handlebars-template">
+        {{> (documentType) }}
+    </script>
+    <script id="beer" type="text/x-handlebars-template">
+        <div class="box">
+            <strong>{{document.name}}</strong>
+            <span class="tag is-light">Beer</span>
+            {{#if document.style}}
+                <span class="tag is-light">{{document.style}}</span>
+            {{/if}}
+            {{#if document.abv}}
+                <span class="tag is-light">{{document.abv}}% ABV</span>
+            {{/if}}
+            <button type="button" class="tag is-dark is-pulled-right" onclick="return toggleScore('{{id}}')">{{roundScore score}}</button>
+            <p>{{document.description}}</p>
+            <div id="score-{{id}}" style="display:none">
+                <strong>Score Explanation</strong>
+                <ul class="tree">
+                    {{> searchResultExplanationTmpl explanation}}
+                </ul>
+            </div>
+        </div>
+    </script>
+    <script id="brewery" type="text/x-handlebars-template">
+        <div class="box">
+            <strong>{{document.name}}</strong>
+            <span class="tag is-light">Brewery</span>
+            {{#if document.country}}
+                <span class="tag is-light">
+                    {{document.country}}
+                    {{#if document.state}}
+                        , {{document.state}}
+                    {{/if}}
+                    {{#if document.city}}
+                    , {{document.city}}
+                    {{/if}}
+                </span>
+            {{/if}}
+            <button type="button" class="tag is-dark is-pulled-right" onclick="return toggleScore('{{id}}')">{{roundScore score}}</button>
+            <p>{{document.description}}</p>
+            <div id="score-{{id}}" style="display:none">
+                <strong>Score Explanation</strong>
+                <ul class="tree">
+                    {{> searchResultExplanationTmpl explanation}}
+                </ul>
+            </div>
+        </div>
+    </script>
+    <script id="searchResultExplanationTmpl" type="text/x-handlebars-template">
+        <li><span class="is-size-7">{{value}} - {{message}}</span>
+            {{#if children}}
+                <ul>
+                    {{#each children as |child|}}
+                        {{> searchResultExplanationTmpl child}}
+                    {{/each}}
+                </ul>
+            {{/if}}
+        </li>
+    </script>
+    <script id="aggregationsTmpl" type="text/x-handlebars-template">
+        {{#if hits}}
+            <h4 class="title is-4">Filter</h4>
+            {{#if aggregations}}
+                {{#each aggregations as |aggregation|}}
+                    {{#if aggregation.values}}
+                        {{> aggregationTmpl aggregation}}
+                    {{/if}}
+            {{/each}}
+            {{/if}}
+        {{/if}}
+    </script>
+    <script id="aggregationTmpl" type="text/x-handlebars-template">
+        <div class="box">
+            <strong>{{display_name}}</strong>
+            {{#each values as |value|}}
+                {{#if value.count}}
+                <div class="field">
+                    <label class="checkbox">
+                        {{#if value.filtered}}
+                        <input name="f_{{../filter_name}}" value="{{value.filter_name}}" checked type="checkbox" onclick="resubmit()" style="vertical-align: middle;">
+                        {{else}}
+                        <input name="f_{{../filter_name}}" value="{{value.filter_name}}" type="checkbox" onclick="resubmit()" style="vertical-align: middle;">
+                        {{/if}}
+                        <span class="is-size-7" style="vertical-align: middle;">{{value.display_name}} ({{value.count}})</span>
+                    </label>
+                </div>
+                {{/if}}
+            {{/each}}
+        </div>
+    </script>
+</head>
+<body class="Site">
+<div class="Site-content">
+    <div style="margin-top: 2%"></div>
+
+
+    <div style="text-align: center;">
+        <a href="/" style="display: inline-block;">
+            <img src="/img/beer-search-logo.png" height="100px" width="400px">
+        </a>
+        <br>
+    </div>
+
+    <form action="/" method="get" id="searchForm">
+        <input id="page" name="p" value="1" type="hidden"/>
+
+    <!--<div class="content column is-three-fifths is-offset-one-fifth" style="margin-top: 30px">-->
+    <div class="content column is-half is-offset-one-quarter" style="margin-top: 30px">
+        <div class="control has-icons-left">
+
+                <input id="query" name="q" class="input is-medium" type="search" placeholder="Search beers and breweries" name="Search">
+                <span class="icon is-medium is-left" style="cursor: pointer">
+                      <i class="fa fa-search"></i>
+        </span>
+
+
+        </div>
+    </div>
+
+    <div class="column is-half is-offset-one-quarter">
+        <div class="columns">
+            <div id="searchResultsArea" class="column is-three-quarters">
+
+            </div>
+            <div id="aggregationsArea" class="column is-one-quarter">
+
+            </div>
+        </div>
+    </div>
+
+    </form>
+</div>
+</body>
+</html>
