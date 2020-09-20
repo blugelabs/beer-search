@@ -51,7 +51,7 @@ func main() {
 		WithVirtualField(fieldTypeBrewery)
 
 	if *backupBeersTo != "" {
-		indexReader, err := bluge.OpenSnapshotReader(beerCfg)
+		indexReader, err := bluge.OpenReader(beerCfg)
 		if err != nil {
 			log.Fatalf("unable to open snapshot reader: %v", err)
 		}
@@ -63,7 +63,7 @@ func main() {
 	}
 
 	if *doTestSearch {
-		indexReader, err := bluge.OpenSnapshotReader(beerCfg)
+		indexReader, err := bluge.OpenReader(beerCfg)
 		if err != nil {
 			log.Fatalf("unable to open snapshot reader: %v", err)
 		}
