@@ -24,6 +24,9 @@ import (
 	"os"
 	"time"
 
+	"github.com/blugelabs/bluge/search"
+	"github.com/blugelabs/bluge/search/aggregations"
+
 	"github.com/blugelabs/bluge"
 )
 
@@ -67,20 +70,34 @@ func main() {
 		if err != nil {
 			log.Fatalf("unable to open snapshot reader: %v", err)
 		}
-		q := bluge.NewTermQuery("bud").SetField("desc")
-		req := bluge.NewTopNSearch(resultsPerPage, q)
+		q := bluge.NewNumericRangeInclusiveQuery(0, bluge.MaxNumeric, false, true).SetField("abv")
+		req := bluge.NewTopNSearch(0, q).WithStandardAggregations()
+		styleAgg := aggregations.NewTermsAggregation(aggregations.FilterText(search.Field("style-facet"),
+			func(bytes []byte) bool {
+				return len(bytes) > 0
+			}), 10)
+		abvQuantile := aggregations.Quantiles(search.Field("abv"))
+		styleAgg.AddAggregation("abvQuant", abvQuantile)
+		req.AddAggregation(styleAggregation, styleAgg)
 		dmi, err := indexReader.Search(context.Background(), req)
 		if err != nil {
 			log.Fatalf("error executing search: %v", err)
 		}
-		next, err := dmi.Next()
-		for next != nil && err == nil {
-			fmt.Printf("document match: %d\n", next.Number)
-			next, err = dmi.Next()
+		fmt.Printf("%d total hits\n", dmi.Aggregations().Count())
+		styles := dmi.Aggregations().Aggregation(styleAggregation).(search.BucketCalculator)
+		for _, styleBucket := range styles.Buckets() {
+			abvQ := styleBucket.Aggregations()["abvQuant"].(*aggregations.QuantilesCalculator)
+			p50, err := abvQ.Quantile(0.5)
+			if err != nil {
+				log.Fatal(err)
+			}
+			p99, err := abvQ.Quantile(0.99)
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Printf("%35s - %4d - Median ABV: %4.1f 99%% ABV: %4.1f\n", styleBucket.Name(), styleBucket.Count(), p50, p99)
 		}
-		if err != nil {
-			log.Printf("search error: %v", err)
-		}
+
 		return
 	}
 
