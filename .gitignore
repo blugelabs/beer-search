@@ -12,3 +12,5 @@ vendor/**
 !vendor/manifest
 *.test
 tags
+beers.bluge/
+breweries.bluge/
