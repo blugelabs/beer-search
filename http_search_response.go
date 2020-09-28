@@ -31,7 +31,7 @@ type DocumentMatch struct {
 type AggregationValue struct {
 	DisplayName string `json:"display_name"`
 	FilterName  string `json:"filter_name"`
-	Count       int    `json:"count"`
+	Count       uint64 `json:"count"`
 	Filtered    bool   `json:"filtered"`
 }
 
@@ -43,7 +43,7 @@ type Aggregation struct {
 
 type SearchResponse struct {
 	Query        string                  `json:"query"`
-	Total        int                     `json:"total"`
+	Total        uint64                  `json:"total"`
 	TopScore     float64                 `json:"top_score"`
 	Hits         []*DocumentMatch        `json:"hits"`
 	Duration     string                  `json:"duration"`
