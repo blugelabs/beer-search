@@ -21,8 +21,16 @@ github.com/blugelabs/bleve v1.0.11/go.mod h1:rdfj/HXw8w0nqLRK6MVI8LIzzQWwPnizzZl
 github.com/blugelabs/bleve v1.0.13 h1:c8dHqLEOLTaiVad39EbSOB2ujWpnzhmN1S5dEWo7M+0=
 github.com/blugelabs/bleve v1.0.13/go.mod h1:tvK37RA+N3/rARsFD3pbnVAHq8uTHM3pGhlrXYRb7P0=
 github.com/blugelabs/blevex v0.0.0-20200217235338-e3f88a9f0c70/go.mod h1:8wZiR5zY9UnVRcPMpFj+52YqWrBOnmtnvMWnmIIfnzo=
+github.com/blugelabs/bluge v0.1.1 h1:YY6HVbJUEeBtsWw3/H+D3FbXdPO6k07P7qaMn8j8LTU=
+github.com/blugelabs/bluge v0.1.1/go.mod h1:Ah8c1+vYuQiL26j2SXwyt2OPQhcE75q9LTtUVQx0hYA=
+github.com/blugelabs/bluge_segment_api v0.1.0 h1:Z+rj+KYLpdblTAYSjBsuNC79dHB3Oc5exuDBEyAGPnk=
+github.com/blugelabs/bluge_segment_api v0.1.0/go.mod h1:tV1dxZRn5KUxlghf8qWwDs05TdcxaiW+TkXecb7nt54=
 github.com/blugelabs/go-porterstemmer v1.0.3 h1:zEaHdv8g4mDQwtiiC56bbqldu6ZXe98lvuDJDGTsyNE=
 github.com/blugelabs/go-porterstemmer v1.0.3/go.mod h1:JjARnMFpBb+gpwvbpScMHNC/nI/j132TC60q74VXnpc=
+github.com/blugelabs/ice v0.1.1 h1:H4EpKdiFSKKLMo0CLl4keCdHFEQIF+sMMUEds7SQBQs=
+github.com/blugelabs/ice v0.1.1/go.mod h1:qTvShx0ZvYCzF9r5yaHH9lA8a7S34f5xJILlMV/CnlU=
+github.com/blugelabs/query_string v0.1.0 h1:Yx6kdTvLR0x5YGQ3EXL+JHxYrprSytelVwV/oSw/wXw=
+github.com/blugelabs/query_string v0.1.0/go.mod h1:7YNC89WcILyoHNibe+iswtEyjC2Lr5kSJ5JPhKXm/4E=
 github.com/blugelabs/segment v1.0.0 h1:cdmniShyF+v3laM9wjnKTLUtv7kUqq/jPyO93u/VGPk=
 github.com/blugelabs/segment v1.0.0/go.mod h1:MhkHgsOAUkv0c6J3KxiFswCR1wo3olyXd/nti/+i2Ts=
 github.com/blugelabs/vellum v1.0.2 h1:z+5n+U9B+wBqsq8Ip7aUktWdLOr9dwhZj+wpBBspf2Q=
